@@ -5,8 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secretary</title>
-    <link rel="stylesheet" href="secretary.css">
-    <link rel="stylesheet" href="../parent.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/4f74b84bed.js" crossorigin="anonymous"></script>
 
 </head>
@@ -25,12 +24,16 @@
     </li>
 
       <li class="flex-item">
-          <div class= 'container2'> 
+          <div class='container2'> 
 
            <section id= 'profile'>
              <h1>Profile</h1>
            </section>
            
+           <section id='message'>
+            <h1>Message</h1>
+           </section>
+
            <section id='course'> 
 
            <div id="idcreate-course" class="modal">
@@ -81,9 +84,9 @@
                 <a onclick="document.getElementById('idcreate-course').style.display='block'" href="#course" class="create-course-btn" ><p>Create Course</p></a>
               </div>
 
-              <div class="secretary-dropdown">
+              <div class="dropdown">
                 <button href="#course" class="create-course-btn2">Department</button>
-                <div class="secretary-dropdown-content">
+                <div class="dropdown-content">
                 <a href="#course">Computer Engineering</a>
                 <a href="#course">Electrics Engineering</a>
                 <a href="#course">Biomedical Engineering</a>
@@ -92,9 +95,9 @@
                 </div>
               </div>
               
-              <div class="secretary-dropdown2">
+              <div class="dropdown2">
                 <button href="#course" class="create-course-btn3">Download</button>
-                <div class="secretary-dropdown-content2">
+                <div class="dropdown-content2">
                 <a href="../files/all-courses.xls" download="">.xls</a>
                 <a href="../files/all-courses.pdf" download>.pdf</a>
                 </div>
@@ -102,7 +105,7 @@
 
              </div>
 
-              <table id="research-table">
+              <table id="course-table">
                 <caption>
                   <h2>All Courses</h2>
                 </caption>
@@ -119,9 +122,6 @@
                 <tbody>
           </section>
            
-          <section id= 'message'>
-            <h1>Message</h1>
-           </section>
          </div>
 
       </li>
@@ -179,7 +179,7 @@ if (mysqli_num_rows($result) > 0) {
     "<td>" . $row['code']. "</td>" . 
     "<td>" . $row['course_name']. "</td>" . 
     "<td>" . $row['course_type']. "</td>" . 
-    "<td>" . $row['fname']. $row['lname'] ."</td>" . 
+    "<td>" . $row['fname']." " . $row['lname'] ."</td>" . 
     "<td>" . $row['date_time']. "</td>" .
     "<td>" . "<a onclick=\"delete_data($data_id)\" href=\"#course\">" . "<i class=\"fas fa-trash-alt\">" . "</i>" .  "</a>" . "</td>" . "</tr>";
   }
@@ -195,7 +195,7 @@ if(isset($_POST['create_course_button'])){
 	$cc_course_datetime = $_POST['date'];
   $cc_course_instructor_id = $instructor_id;
 
-	if($cc_course_code != NULL || $cc_course_name != NULL){
+	if($cc_course_code != " " || $cc_course_name != " "){
     $query = "INSERT INTO course (code,course_name,course_type,instructor_id,date_time) VALUES (?,?,?,?,?)";
     $statement = mysqli_prepare($conn,$query);
     mysqli_stmt_bind_param($statement,'sssis',$cc_course_code,$cc_course_name,$cc_course_type,$cc_course_instructor_id,$cc_course_datetime);

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Term Project</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="style.css">
 	<script src="https://kit.fontawesome.com/4f74b84bed.js" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -26,7 +26,7 @@
 	
 			<div class="tabs-content">
 				<div id="login-tab-content" class="active">
-					<form id="signInForm" class="login-form" action="index.php" method="post">
+					<form id="signInForm" class="login-form" action="../test.php" method="post">
 						<input name="username" type="text" class="input" id="user_login" autocomplete="off" placeholder="Username">
 						<input name="password" type="password" class="input" id="user_pass" autocomplete="off" placeholder="Password">
 						<input type="checkbox" class="checkbox" id="remember_me">
@@ -124,37 +124,12 @@ if(isset($_POST['register'])){
 	mysqli_stmt_execute($statement);
 	print(mysqli_stmt_error($statement) . "\n");
 	mysqli_stmt_close($statement);
+	
+	if($user_type == "student"){
+		$query_info = "INSERT INTO student-information (username,fname,lname,user_pass,user_role) VALUES (?,?,?,?,?)";
+	}
 
 	echo $usern . " " . $firstn . " ". $lastn . " " . $passwrd . " " . $user_type;
-}
-
-if(isset($_POST['login'])){
-	$user_login = $_POST['username'];
-	$passwrd_login = $_POST['password'];
-	
-	$sql = "SELECT username,user_pass,user_role FROM user";
-	$result = mysqli_query($conn,$sql);
-	if(mysqli_num_rows($result)>0){
-		while($row = mysqli_fetch_assoc($result)){
-			if($row['username'] == $user_login && $row['user_pass'] == $passwrd_login){
-				if($row['user_role']=="secretary"){
-					header('Location: ../secretary/secretary.php');
-					exit;
-				}
-				else if($row['user_role']=="instructor"){
-					header("Location: ../instructor/instructor.html");
-					exit;
-				}
-				else if($row['user_role']=="student"){
-					header("Location: ../student/student.html");
-					exit;
-				}
-				else{
-					echo "error";
-				}
-			}
-		}
-	}
 }
 
 function test_input($data) {
