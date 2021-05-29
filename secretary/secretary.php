@@ -172,7 +172,7 @@
 //   echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 // }
 
-$sql = "SELECT id,code,course_name,course_type,instructor_id,date_time FROM course";
+$sql = "SELECT course.id,course.code,course.course_name,course.course_type,course.instructor_id,course.date_time,user.fname,user.lname FROM course,user WHERE user.id=course.instructor_id";
 $result = mysqli_query($conn, $sql);
  
 if (mysqli_num_rows($result) > 0) {
@@ -183,7 +183,7 @@ if (mysqli_num_rows($result) > 0) {
     "<td>" . $row['code']. "</td>" . 
     "<td>" . $row['course_name']. "</td>" . 
     "<td>" . $row['course_type']. "</td>" . 
-    "<td>" . $row['instructor_id']. "</td>" . 
+    "<td>" . $row['fname']. $row['lname'] ."</td>" . 
     "<td>" . $row['date_time']. "</td>" .
     "<td>" . "<a onclick=\"delete_data($data_id)\" href=\"#course\">" . "<i class=\"fas fa-trash-alt\">" . "</i>" .  "</a>" . "</td>" . "</tr>";
   }
