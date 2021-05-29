@@ -72,7 +72,7 @@
                   ?>
                 <label for="date">Date</label>
                 <input type="datetime-local" id="date" name="date"> <br>
-                <button onclick="myFunction()" name="create_course_button" type="submit">Create Course</button>
+                <button name="create_course_button" type="submit">Create Course</button>
                 </form>
             </div>
 
@@ -130,10 +130,6 @@
   
 
   <script>
-    function myFunction() {
-      alert("Course was created succesfully!");
-    }
-
     function deleteFunction() {
     if (confirm("Are you sure to delete?")) {
       alert("Course was deleted!");
@@ -199,12 +195,20 @@ if(isset($_POST['create_course_button'])){
 	$cc_course_datetime = $_POST['date'];
   $cc_course_instructor_id = $instructor_id;
 
-	$query = "INSERT INTO course (code,course_name,course_type,instructor_id,date_time) VALUES (?,?,?,?,?)";
-	$statement = mysqli_prepare($conn,$query);
-	mysqli_stmt_bind_param($statement,'sssis',$cc_course_code,$cc_course_name,$cc_course_type,$cc_course_instructor_id,$cc_course_datetime);
-	mysqli_stmt_execute($statement);
-	print(mysqli_stmt_error($statement) . "\n");
-	mysqli_stmt_close($statement);
+	if($cc_course_code != NULL || $cc_course_name != NULL){
+    $query = "INSERT INTO course (code,course_name,course_type,instructor_id,date_time) VALUES (?,?,?,?,?)";
+    $statement = mysqli_prepare($conn,$query);
+    mysqli_stmt_bind_param($statement,'sssis',$cc_course_code,$cc_course_name,$cc_course_type,$cc_course_instructor_id,$cc_course_datetime);
+    mysqli_stmt_execute($statement);
+    print(mysqli_stmt_error($statement) . "\n");
+    mysqli_stmt_close($statement);
+    $message = "Course was created succesfully!";
+    echo "<script type='text/javascript'>alert('$message');</script>"; 
+  }
+  else{
+    $message = "Course name or code cannot be empty!";
+    echo "<script type='text/javascript'>alert('$message');</script>";
+  }
 }
  
 
