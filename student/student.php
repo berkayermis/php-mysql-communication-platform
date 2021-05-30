@@ -36,7 +36,7 @@ session_start();
 
 
        <section id= 'profile'>
-         <h1>Profile</h1>
+         <h1>Welcome <?php echo $_SESSION['fname']." ". $_SESSION['lname'] ?></h1>
        </section>
        
        <section id='course'>
@@ -63,7 +63,7 @@ session_start();
                   if(mysqli_num_rows($result)>0){
                     while($row = mysqli_fetch_assoc($result)){
                       $data_add = $row['id'];
-                      echo "<a href='direct.php?code=$data_add'>" . $row['course_name'] . "</a>";
+                      echo "<a href='add.php?code=$data_add'>" . $row['course_name'] . "</a>";
                     }
                     echo "</div>";
                   }
@@ -168,7 +168,6 @@ session_start();
              if (!$conn) {
                die("Connection failed: " . mysqli_connect_error());
              }
-             $userID = $_SESSION['user_id'];
              $sql = "SELECT course.course_name AS A, course.code AS B , course.course_type AS C, course.material AS D 
              FROM course,user_course,user WHERE user_course.userr_id = $userID AND course.id = user_course.course_id AND user.id = $userID ";
             $result = mysqli_query($conn,$sql);
@@ -320,25 +319,65 @@ session_start();
 
         <div id="id99" class="modal">
             <span onclick="document.getElementById('id99').style.display='none'" class="close" title="Close Modal">&times;</span>            
-            <form class="form">
+            <form class="form" action="student.php" method="post">
               <h2>Send Request</h2> <br>
               <label for="recipient"><strong>Recipient</strong></label> <br>
               <select name="recipient" id="recipient">
-                <option >Mehmet Kemal Özdemir</option>
-                <option >Fatih Toy</option>
-                <option >Hüseyin Şerif Savcı </option>
-                <option >Hasan Fehmi Ateş</option>
+                <?php
+                require_once('../config.php');
+
+                // Create connection
+                $conn = mysqli_connect($servername, $username, $password,$db);
+            
+                // Check connection
+                if (!$conn) {
+                  die("Connection failed: " . mysqli_connect_error());
+                }
+
+                $sql = "SELECT id,fname,lname FROM user WHERE user.user_role = 'instructor'";
+                $result = mysqli_query($conn,$sql);
+                if(mysqli_num_rows($result)>0){
+                  while($row = mysqli_fetch_assoc($result)){
+                    echo "<option>" . $row['fname'] . " " . $row['lname'] . "</option>";
+                  }
+                }
+                ?>
               </select> <br>      
               <label type="note" for="note">Note</label> <br>       
               <textarea name="note" id="note" cols="30" rows="10" placeholder="Type a note.."></textarea> <br>              
               <label for="file">File</label> <br> 
-              <input type="file"></input> <br>
-              <button href="#research" onclick="requestAlert()">Send</button>
+              <input type="file" name="file"></input> <br>
+              <button href="#research" name="send_request" onclick="requestAlert()">Send</button>
             </form>
         </div>
-
-
       </section>
+
+      <?php
+      if(isset($_POST['send_request'])){
+        $recipient = $_POST['recipient'];
+        $x = array();
+        $x = explode(" ",$recipient);
+        $search_query = "SELECT user.id FROM user WHERE fname='$x[0]' AND lname='$x[1]'";
+        $search_result = mysqli_query($conn,$search_query);
+        if(mysqli_num_rows($search_result) > 0){
+          while($row = mysqli_fetch_assoc($search_result)){
+            $recipientID = $row['id'];
+          }
+        }
+        $note = $_POST['note'];
+        $req_file = $_POST['file'];
+        
+        $query = "INSERT INTO request (request_user_id,instructor_id,note,request_file) VALUES (?,?,?,?)";
+        $statement = mysqli_prepare($conn,$query);
+        mysqli_stmt_bind_param($statement,'iisb',$userID,$recipientID,$note,$req_file);
+        mysqli_stmt_execute($statement);
+        print(mysqli_stmt_error($statement) . "\n");
+        mysqli_stmt_close($statement);
+        $message = "Request was sent succesfully!";
+        echo "<script type='text/javascript'>alert('$message');</script>"; 
+
+      }
+      ?>
        
       <section id= 'message'>
         <h1>Message</h1>
