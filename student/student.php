@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,11 +13,10 @@
     <script src="https://kit.fontawesome.com/4f74b84bed.js" crossorigin="anonymous"></script>
 </head>
 <body>
-
     <nav>
+        <h1><?php  ?></h1>
         <a href="#course"><img class="icon-logo-width" src="../icons/school-logo.png" alt=""></a> <hr>
         <a href="#profile"><i class="far fa-user"></i></a>
-
         <div class="dropdown">
           <a href="#course"><i class="fas fa-book"></i></a>
           <div class="dropdown-content">
@@ -21,7 +24,6 @@
           <a href="#taken-course">Taken Courses</a>
           </div>
         </div>
-
         <a href="#research"><img class="icon-width" src="../icons/add-research.png" alt=""></a>
         <a href="#message"><i class="far fa-envelope"></i></a>
         <a href="../main/index.php"><i class="fas fa-sign-out-alt"></i></a>
@@ -56,39 +58,25 @@
                     die("Connection failed: " . mysqli_connect_error());
                   }
 
-                  function addTakenCourse(){
-                    $query = "INSERT INTO user_course (userr_id,course_id) VALUES (?,?,?,?,?)";
-                    $statement = mysqli_prepare($conn,$query);
-                    mysqli_stmt_bind_param($statement,'ii',$course_id,$users_id);
-                    mysqli_stmt_execute($statement);
-                    print(mysqli_stmt_error($statement) . "\n");
-                    mysqli_stmt_close($statement);
-                    $message = "User_course was updated succesfully!";
-                    echo "<script type='text/javascript'>alert('$message');</script>"; 
-                    
-                    
-                  }
-                  
-                  $sql = "SELECT course.id,course.name,user.id,user.user_role FROM course,user WHERE user.user_role='student'";
+                  $sql = "SELECT id,course_name FROM course";
                   $result = mysqli_query($conn,$sql);
                   if(mysqli_num_rows($result)>0){
                     while($row = mysqli_fetch_assoc($result)){
-                      $course_id = $row['course.id'];
-                      $users_id = $row['user.id'];
-                      
-                      echo "<a onclick=\"addTakenCourse()\" href=\"#course\">" . $row['course_name'] . "</a>";
+                      echo '<a onclick="callphp()" href=\'#course\'>' . $row['course_name'] . '</a>';
+                      if(true){
+                        $_SESSION['courses_id'] = $row['id'];
+                      }
                     }
                     echo "</div>";
                   }
-                ?>
-        
 
-                <!-- <a onclick="addAlertFunction()" href="#course">Calculus</a>
-                <a onclick="addAlertFunction()" href="#course">Physics</a>
-                <a onclick="addAlertFunction()" href="#course">Applied Statistics</a>
-                <a onclick="addAlertFunction()" href="#course">Advanced Programming</a>
-                <a onclick="addAlertFunction()" href="#course">Web Development</a> -->
-                <!-- </div> -->
+                ?>
+                <script>
+                  function callphp(){
+                    window.location = '../direct.php';
+                  }
+                </script>
+            
               </div>
             </li>
           </ul>
@@ -160,26 +148,31 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><a onclick="document.getElementById('id01').style.display='block'" style="width:auto;"><i class="fas fa-search"></i></a></td>
-              <td>COE3110759</td>
-              <td>Calculus</td>
-              <td>Mandatory</td>
-            </tr>
-            <tr>
-              <td><a onclick="document.getElementById('id02').style.display='block'" style="width:auto;"><i class="fas fa-search"></i></a></td>
-              <td>COE3167930</td>
-              <td>Physics</td>
-              <td>Mandatory</td>
-            </tr>
-            <tr>
-              <td><a onclick="document.getElementById('id03').style.display='block'" style="width:auto;"><i class="fas fa-search"></i></a></td>
-              <td>COE2146020</td>
-              <td>Advanced Programming</td>
-              <td>Mandatory</td>
-            </tr>
-          </tbody>
-        </table> 
+            <?php
+             require_once('../config.php');
+
+             // Create connection
+             $conn = mysqli_connect($servername, $username, $password,$db);
+         
+             // Check connection
+             if (!$conn) {
+               die("Connection failed: " . mysqli_connect_error());
+             }
+             $userID = $_SESSION['user_id'];
+             $sql = "SELECT course.course_name AS A, course.code AS B , course.course_type AS C, course.material AS D 
+             FROM course,user_course,user WHERE user_course.userr_id = $userID AND course.id = user_course.course_id AND user.id = $userID ";
+            $result = mysqli_query($conn,$sql);
+            if(mysqli_num_rows($result) > 0){
+              while($row = mysqli_fetch_assoc($result)){
+                echo "<tr>" . 
+                "<td>" . $row['D'] . "</td>" .
+                "<td>" . $row['B'] . "</td>" .
+                "<td>" . $row['A'] . "</td>" .
+                "<td>" . $row['C'] . "</td>" . "</tr>";
+              }
+              echo "</tbody> </table>";
+            }
+            ?>
 
         <div id="id01" class="modal">
           <div class="modal-content">
@@ -377,6 +370,7 @@
 
 
 <?php
+
 
 
 

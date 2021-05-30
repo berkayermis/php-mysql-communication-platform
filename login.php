@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once('config.php');
 
 // Create connection
@@ -12,13 +14,14 @@ if (!$conn) {
 if(isset($_POST['login'])){
 	$user_login = $_POST['username'];
 	$passwrd_login = $_POST['password'];
-	
 	$sql = "SELECT id,username,user_pass,user_role FROM user";
 	$result = mysqli_query($conn,$sql);
 	if(mysqli_num_rows($result)>0){
 		while($row = mysqli_fetch_assoc($result)){
 			if($row['username'] == $user_login && $row['user_pass'] == $passwrd_login){
-				
+				$_SESSION['username'] = $row['username'];
+				$_SESSION['user_id'] = $row['id'];
+				$_SESSION['user_role'] = $row['user_role'];
 				if($row['user_role']=="secretary"){
 					header('Location: secretary/secretary.php');
 					exit;
@@ -28,7 +31,6 @@ if(isset($_POST['login'])){
 					exit;
 				}
 				else if($row['user_role']=="student"){
-					$user_id = $row['id'];
 					header("Location: student/student.php");
 					exit;
 				}

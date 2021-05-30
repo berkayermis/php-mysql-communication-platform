@@ -26,7 +26,7 @@
 	
 			<div class="tabs-content">
 				<div id="login-tab-content" class="active">
-					<form id="signInForm" class="login-form" action="../test.php" method="post">
+					<form id="signInForm" class="login-form" action="../login.php" method="post">
 						<input name="username" type="text" class="input" id="user_login" autocomplete="off" placeholder="Username">
 						<input name="password" type="password" class="input" id="user_pass" autocomplete="off" placeholder="Password">
 						<input type="checkbox" class="checkbox" id="remember_me">
@@ -126,10 +126,8 @@ if(isset($_POST['register'])){
 	mysqli_stmt_close($statement);
 	
 	if($user_type == "student"){
-		$query_info = "INSERT INTO student-information (username,fname,lname,user_pass,user_role) VALUES (?,?,?,?,?)";
+		$query_info = "INSERT INTO student_information (username,fname,lname,user_pass,user_role) VALUES (?,?,?,?,?)";
 	}
-
-	echo $usern . " " . $firstn . " ". $lastn . " " . $passwrd . " " . $user_type;
 }
 
 function test_input($data) {
