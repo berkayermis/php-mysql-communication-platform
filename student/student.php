@@ -62,21 +62,13 @@ session_start();
                   $result = mysqli_query($conn,$sql);
                   if(mysqli_num_rows($result)>0){
                     while($row = mysqli_fetch_assoc($result)){
-                      echo '<a onclick="callphp()" href=\'#course\'>' . $row['course_name'] . '</a>';
-                      if(true){
-                        $_SESSION['courses_id'] = $row['id'];
-                      }
+                      $data_add = $row['id'];
+                      echo "<a href='direct.php?code=$data_add'>" . $row['course_name'] . "</a>";
                     }
                     echo "</div>";
                   }
 
                 ?>
-                <script>
-                  function callphp(){
-                    window.location = '../direct.php';
-                  }
-                </script>
-            
               </div>
             </li>
           </ul>
@@ -131,9 +123,27 @@ session_start();
               <div class="drop-course2">
                 <a class="drop-course" href="#taken-course">Drop Course</a>
                 <div class="drop-course-taken">
-                <a onclick="dropAlertFunction()" href="#taken-course">Calculus</a>
-                <a onclick="dropAlertFunction()" href="#taken-course">Physics</a>
-                <a onclick="dropAlertFunction()" href="#taken-course">Advanced Programming</a>
+                <?php
+             require_once('../config.php');
+
+             // Create connection
+             $conn = mysqli_connect($servername, $username, $password,$db);
+         
+             // Check connection
+             if (!$conn) {
+               die("Connection failed: " . mysqli_connect_error());
+             }
+             $userID = $_SESSION['user_id'];
+             $sql = "SELECT course.course_name AS A , user_course.id AS ucid
+             FROM course,user_course,user WHERE user_course.userr_id = $userID AND course.id = user_course.course_id AND user.id = $userID ";
+            $result = mysqli_query($conn,$sql);
+            if(mysqli_num_rows($result) > 0){
+              while($row = mysqli_fetch_assoc($result)){
+                $data = $row['ucid'];
+                echo "<a href='drop.php?code=$data'>" . $row['A'] . "</a>";
+              }
+            }
+                ?>
                 </div>
               </div>
             </li>
