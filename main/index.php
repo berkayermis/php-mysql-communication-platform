@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -117,6 +120,7 @@ if(isset($_POST['register'])){
 	$lastn = $_POST['user_lname'];
 	$passwrd = $_POST['user_pass'];
 	$user_type = test_input($_POST['radio']);
+	
 
 	$query = "INSERT INTO user (username,fname,lname,user_pass,user_role) VALUES (?,?,?,?,?)";
 	$statement = mysqli_prepare($conn,$query);
@@ -124,9 +128,26 @@ if(isset($_POST['register'])){
 	mysqli_stmt_execute($statement);
 	print(mysqli_stmt_error($statement) . "\n");
 	mysqli_stmt_close($statement);
-	
+
+	$sql = "SELECT id FROM user WHERE user.username='$usern' AND user.fname='$firstn' AND user.lname='$lastn' AND user.user_role='$user_type'";
+	$result = mysqli_query($conn,$sql);
+	while($row = mysqli_fetch_assoc($result)){
+		$_SESSION['user_reg_id'] = $row['id'];
+	}
+
+	function random_float($start_number = 2,$end_number = 4,$mul = 1000){
+		return mt_rand($start_number * $mul,$end_number * $mul)/$mul;}
+
 	if($user_type == "student"){
-		$query_info = "INSERT INTO student_information (username,fname,lname,user_pass,user_role) VALUES (?,?,?,?,?)";
+		$std_no = rand(60000000,70000000);
+		$std_gpa = random_float(2,4);
+		$std_class = rand(1,4);
+		$query_info = "INSERT INTO student_information (student_id,student_no,gpa,class) VALUES (?,?,?,?)";
+		$statement_info = mysqli_prepare($conn,$query_info);
+		mysqli_stmt_bind_param($statement_info,'iidi',$_SESSION['user_reg_id'],$std_no,$std_gpa,$std_class);
+		mysqli_stmt_execute($statement_info);
+		print(mysqli_stmt_error($statement_info) . "\n");
+		mysqli_stmt_close($statement_info);
 	}
 }
 
@@ -136,14 +157,6 @@ function test_input($data) {
 	$data = htmlspecialchars($data);
 	return $data;
   }
-
-// $sql = "INSERT INTO user (username,fname,lname,user_pass,user_role) VALUES ('berkayermis','Berkay','Ermiş','123456','student')";
-
-// if (mysqli_query($conn, $sql)) {
-//   echo "New record created successfully";
-// } else {
-//   echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-// }
 
 mysqli_close($conn);
 ?>
