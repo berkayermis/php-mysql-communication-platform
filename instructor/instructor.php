@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,14 +20,14 @@
         <a href="#course"><i class="fas fa-book"></i></a>
         <a href="#research"><i class="fas fa-flask"></i></a>
         <a href="#message"><i class="far fa-envelope"></i></a>
-        <a href="../main/index.html"><i class="fas fa-sign-out-alt"></i></a>
+        <a href="../main/index.php"><i class="fas fa-sign-out-alt"></i></a>
       </nav>
        
      <div class= 'container'> 
         <section id= 'logo'>
           </section>
        <section id= 'profile'>
-         <h1>Profile</h1>
+       <h1>Welcome <?php echo $_SESSION['fname']." ". $_SESSION['lname'] ?></h1>
        </section>
        
        <section id='course'>
@@ -43,7 +46,54 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+            <?php
+                  require_once('../config.php');
+
+                  // Create connection
+                  $conn = mysqli_connect($servername, $username, $password,$db);
+              
+                  // Check connection
+                  if (!$conn) {
+                    die("Connection failed: " . mysqli_connect_error());
+                  }
+ 
+                  $sql = 'SELECT course.id AS D, course.code AS B, course.course_name AS A, course.course_type AS C FROM course WHERE course.instructor_id="'.$_SESSION['user_id'].'"';
+                  $sql2 = 'SELECT COUNT(A.userr_id) AS total, A.course_id AS K FROM user_course AS A GROUP BY A.course_id';
+                  $result = mysqli_query($conn,$sql);
+                  $result2 = mysqli_query($conn,$sql2);
+                  $count = 0;
+                  if(mysqli_num_rows($result)>0){
+                      while($row = mysqli_fetch_assoc($result)){
+                        echo "<tr>" . 
+                        "<td>" . '<input type="file" id="myfile" name="myfile" multiple>' . "</td>" . 
+                        "<td>" . $row['B'] . "</td>" . 
+                        "<td>" . $row['A'] . "</td>". 
+                        "<td>" . $row['C'] . "</td>";
+                        while($row_sec = mysqli_fetch_assoc($result2)){
+                          if($row_sec['K']==$row['D']){
+                            echo "<td>". $row_sec['total'] ."</td>";
+                          }
+                        //   if($row_sec['K']==$row['D']) {
+                        //     echo "<td>". $row_sec['total'] ."</td>";
+                        //     break;
+                        //   }
+                        //   else{
+                        //     $count++;
+                        //     if($count==6){
+                        //       echo "<td>" . "ZERO" . "</td>";
+                        //       break;
+                        //     }
+                        //   }
+                        // }
+                        // $count = 0;
+                        // echo "<td> test </td> </tr>";
+                      }
+                      echo "<td> test </td> </tr>";
+                    }
+                  }
+
+                ?>
+              <!-- <tr>
                 <td><input type="file" id="myfile" name="myfile" multiple></td>
                 <td>COE3149681</td>
                 <td>Principle of Programming Languages	</td>
@@ -74,7 +124,7 @@
                 <td>Mandatory</td>
                 <td>80</td>
                 <td><a onclick="document.getElementById('student-list').style.display='block'" href="#course"><i class="fas fa-bars"></i></a></td>
-              </tr>
+              </tr> -->
             </tbody>
           </table> 
 
@@ -128,14 +178,36 @@
               </ol>
             </div>
           </div>
-         
        </section>
 
        <section id='research'>
         <div>
           <a onclick="document.getElementById('research-requests').style.display='block'" href="#research" class="notification" >            
             <span style="line-height: 6vh;">Request</span>
-            <span class="badge">2</span></a>
+            <span class="badge">
+            <?php
+              require_once('../config.php');
+                  
+              // Create connection
+              $conn = mysqli_connect($servername, $username, $password,$db);
+          
+              // Check connection
+              if (!$conn) {
+                die("Connection failed: " . mysqli_connect_error());
+              }
+
+              $request_sql = 'SELECT COUNT(R.id) AS C FROM request AS R WHERE R.instructor_id ="'.$_SESSION['user_id'].'"';
+              $request_result = mysqli_query($conn,$request_sql);
+              if(mysqli_num_rows($request_result)>0){
+                while($request_row = mysqli_fetch_assoc($request_result)){
+                  echo $request_row['C'];
+                }
+              }
+              else{
+                
+              }
+            ?>
+            </span></a>
         </div>
 
         <table class="research-table" id="course-table">
@@ -207,7 +279,44 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
+              <?php
+                require_once('../config.php');
+                  
+                // Create connection
+                $conn = mysqli_connect($servername, $username, $password,$db);
+            
+                // Check connection
+                if (!$conn) {
+                  die("Connection failed: " . mysqli_connect_error());
+                }
+
+                $sql = 'SELECT R.note, R.request_file,U.fname, U.lname, SI.student_no FROM request AS R, user AS U, student_information AS SI
+                WHERE SI.student_id = R.request_user_id AND R.request_user_id = U.id AND  R.instructor_id = "'.$_SESSION['user_id'].'"';
+
+                $result = mysqli_query($conn,$sql);
+                if(mysqli_num_rows($result)>0){
+                  while($row = mysqli_fetch_assoc($result)){
+                    echo "<tr>" . 
+                    "<td>" . "<a>" . "<i class='fas fa-folder'>" . "</i>" . "</a>" . "</td>" . 
+                    "<td>" . $row['fname'] . " " . $row['lname'] .  "</td>" . 
+                    "<td>" . $row['student_no'] . "</td>" . 
+                    "<td>" . $row['note'] . "</td>" . 
+                    "<td>" .
+                    "<div class='options-section'>" . 
+                      // '<form action="#test">' . 
+                      //     '<input class="approval-button" type="submit" value="Accept">'. "</form>" .
+                      //     '<form action="#test">' . 
+                      //     '<input class="reject-button" type="submit" value="Reject">' . "</form>" .
+                         '<button  class="approval-button">' . "Accept" . '</button>' . "<br>" .
+                         '<button  class="reject-button">' . "Reject" . '</button>' . 
+                    "</div>" . 
+                    "</td>" . 
+                    "</tr>";
+                  }
+                }
+              ?>
+
+                <!-- <tr>
                   <td><a href="../files/berkay_ermis.pdf" download><i class="fas fa-folder"></i></a></td>
                   <td>Berkay Ermiş</td>
                   <td>64170024</td>
@@ -230,7 +339,7 @@
                       <button onclick="rejectFunction()" class="reject-button">Reject</button>
                     </div>
                   </td>
-                </tr>
+                </tr> -->
               </tbody>
             </table>
             </div>
