@@ -225,46 +225,41 @@ session_start();
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>64170032</td>
-                <td>Lena Smith</td>
-                <td>Smith</td>
-               <td>3.35</td>
-                <td>3</td>
-                <td><a onclick="document.getElementById('student-information').style.display='block'" href="#research"><i class="fas fa-search"></i></a></td>
-            </tr>
-            <tr>
-              <td>64160024</td>
-                <td>Ceren</td>
-                <td>İşlekli</td>
-                <td>3.50</td>
-                <td>4</td>
-                <td><a onclick="document.getElementById('student-information').style.display='block'" href="#research"><i class="fas fa-search"></i></a></td>
-            </tr>
-            <tr>
-              <td>64170024</td>
-                <td>Nicol</td>
-                <td>Green</td>
-                <td>3.25</td>
-               <td>3</td>
-                <td><a onclick="document.getElementById('student-information').style.display='block'" href="#research"><i class="fas fa-search"></i></a></td>
-            </tr>
+          <?php
+             require_once('../config.php');
+                  
+             // Create connection
+             $conn = mysqli_connect($servername, $username, $password,$db);
+         
+             // Check connection
+             if (!$conn) {
+               die("Connection failed: " . mysqli_connect_error());
+             }
+
+             $sql = 'SELECT * FROM student_research_group AS SRG, student_information AS SI, user AS U
+             WHERE U.id = SRG.student_id AND SRG.student_id = SI.student_id AND SRG.instructor_id ="'.$_SESSION['user_id'].'" ';
+            $result = mysqli_query($conn,$sql);
+            if(mysqli_num_rows($result)>0){
+              while($row = mysqli_fetch_assoc($result)){
+                $x = $row['student_id'];
+                echo "<tr>" . 
+                "<td>" . $row['student_no'] . "</td>" . 
+                "<td>" . $row['fname'] . "</td>" . 
+                "<td>" . $row['lname'] . "</td>" . 
+                "<td>" . $row['gpa'] . "</td>" . 
+                "<td>" . $row['class'] . "</td>" . 
+                "<td>" . 
+                "<a onclick=\"document.getElementById('student-information').style.display='block'\" href='info.php?info=$x'>" . "<i class=\"fas fa-search\">" . "</i>" . "</a>" . "</td>" . "</tr>";
+              }
+            }
+          ?>
           </tbody>
         </table> 
 
-        <div id="student-information" class="modal">
-          <span onclick="document.getElementById('student-information').style.display='none'" class="close" title="Close Modal">&times;</span>            
-         
-          <div class="list">
-            <h3>Taken Course</h3> <br><hr> 
-            <ol class="student-info-list">
-              <li>Calculus</li>
-              <li>Physics</li>
-              <li>Advanced Programming</li>
-            </ol>
-          </div>
-        </div>
 
+              <!-- <li>Calculus</li>
+              <li>Physics</li>
+              <li>Advanced Programming</li> -->
         <div id="research-requests" class="modal">
           <span onclick="document.getElementById('research-requests').style.display='none'" class="close" title="Close Modal">&times;</span>            
           <div>
@@ -290,12 +285,13 @@ session_start();
                   die("Connection failed: " . mysqli_connect_error());
                 }
 
-                $sql = 'SELECT R.note, R.request_file,U.fname, U.lname, SI.student_no FROM request AS R, user AS U, student_information AS SI
+                $sql = 'SELECT R.note, R.request_file,U.fname, U.lname, SI.student_no,SI.student_id FROM request AS R, user AS U, student_information AS SI
                 WHERE SI.student_id = R.request_user_id AND R.request_user_id = U.id AND  R.instructor_id = "'.$_SESSION['user_id'].'"';
 
                 $result = mysqli_query($conn,$sql);
                 if(mysqli_num_rows($result)>0){
                   while($row = mysqli_fetch_assoc($result)){
+                    $std_data = $row['student_id'];
                     echo "<tr>" . 
                     "<td>" . "<a>" . "<i class='fas fa-folder'>" . "</i>" . "</a>" . "</td>" . 
                     "<td>" . $row['fname'] . " " . $row['lname'] .  "</td>" . 
@@ -303,12 +299,8 @@ session_start();
                     "<td>" . $row['note'] . "</td>" . 
                     "<td>" .
                     "<div class='options-section'>" . 
-                      // '<form action="#test">' . 
-                      //     '<input class="approval-button" type="submit" value="Accept">'. "</form>" .
-                      //     '<form action="#test">' . 
-                      //     '<input class="reject-button" type="submit" value="Reject">' . "</form>" .
-                         '<button  class="approval-button">' . "Accept" . '</button>' . "<br>" .
-                         '<button  class="reject-button">' . "Reject" . '</button>' . 
+                         "<button onclick=\"location.href = 'requestApprovalProcess.php?std=$std_data'\"  class='approval-button'>" . "Accept" . '</button>' . "<br>" .
+                         "<button onclick=\"location.href = 'requestDeleteProcess.php?std=$std_data'\"  class='reject-button'>" . "Reject" . '</button>' . 
                     "</div>" . 
                     "</td>" . 
                     "</tr>";
