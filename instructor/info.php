@@ -11,11 +11,11 @@
 <body>
 
 <nav>
-        <a href="#course"><img class="icon-logo-width" src="../icons/school-logo.png" alt=""></a><hr>
-        <a href="#profile"><i class="far fa-user"></i></a>
-        <a href="#course"><i class="fas fa-book"></i></a>
-        <a href="#research"><i class="fas fa-flask"></i></a>
-        <a href="#message"><i class="far fa-envelope"></i></a>
+        <a href="instructor.php#course"><img class="icon-logo-width" src="../icons/school-logo.png" alt=""></a><hr>
+        <a href="instructor.php#profile"><i class="far fa-user"></i></a>
+        <a href="instructor.php#course"><i class="fas fa-book"></i></a>
+        <a href="instructor.php#research"><i class="fas fa-flask"></i></a>
+        <a href="instructor.php#message"><i class="far fa-envelope"></i></a>
         <a href="../main/index.php"><i class="fas fa-sign-out-alt"></i></a>
       </nav>
 

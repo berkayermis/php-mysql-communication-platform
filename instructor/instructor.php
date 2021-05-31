@@ -56,128 +56,42 @@ session_start();
                   if (!$conn) {
                     die("Connection failed: " . mysqli_connect_error());
                   }
- 
-                  $sql = 'SELECT course.id AS D, course.code AS B, course.course_name AS A, course.course_type AS C FROM course WHERE course.instructor_id="'.$_SESSION['user_id'].'"';
-                  $sql2 = 'SELECT COUNT(A.userr_id) AS total, A.course_id AS K FROM user_course AS A GROUP BY A.course_id';
+
+                  $sql = 'SELECT A.course_id,course.id,course_name,course.code,course.course_type,COUNT(A.userr_id) AS total
+                  FROM user_course AS A,course,user WHERE course.instructor_id=8 AND course.instructor_id=user.id AND course.id=A.course_id GROUP BY course_name';
                   $result = mysqli_query($conn,$sql);
+                  $sql2 = 'SELECT course_name,course.id,course.code,course.course_type
+                  FROM course WHERE course.id NOT IN (SELECT A.course_id FROM user_course AS A) AND course.instructor_id= "'.$_SESSION['user_id'].'" ';
                   $result2 = mysqli_query($conn,$sql2);
-                  $count = 0;
+                  // $count = 0;
                   if(mysqli_num_rows($result)>0){
                       while($row = mysqli_fetch_assoc($result)){
+                        $courseInfo = $row['course_id'];
                         echo "<tr>" . 
                         "<td>" . '<input type="file" id="myfile" name="myfile" multiple>' . "</td>" . 
-                        "<td>" . $row['B'] . "</td>" . 
-                        "<td>" . $row['A'] . "</td>". 
-                        "<td>" . $row['C'] . "</td>";
-                        while($row_sec = mysqli_fetch_assoc($result2)){
-                          if($row_sec['K']==$row['D']){
-                            echo "<td>". $row_sec['total'] ."</td>";
-                          }
-                        //   if($row_sec['K']==$row['D']) {
-                        //     echo "<td>". $row_sec['total'] ."</td>";
-                        //     break;
-                        //   }
-                        //   else{
-                        //     $count++;
-                        //     if($count==6){
-                        //       echo "<td>" . "ZERO" . "</td>";
-                        //       break;
-                        //     }
-                        //   }
-                        // }
-                        // $count = 0;
-                        // echo "<td> test </td> </tr>";
-                      }
-                      echo "<td> test </td> </tr>";
+                        "<td>" . $row['code'] . "</td>" . 
+                        "<td>" . $row['course_name'] . "</td>". 
+                        "<td>" . $row['course_type'] . "</td>" . 
+                        "<td>" . $row['total'] . "</td>" . 
+                        "<td>" . "<a href='registeredStudentInfo.php?info=$courseInfo'>". "<i class=\"fas fa-bars\">" . "</i>" . "</a>" . "</td>" . "</tr>";
+                    }
+                  }
+                  if(mysqli_num_rows($result2)>0){
+                    while($row2 = mysqli_fetch_assoc($result2)){
+                      $courseInfoSecond = $row2['id'];
+                      echo "<tr>" . 
+                      "<td>" . '<input type="file" id="myfile" name="myfile" multiple>' . "</td>" . 
+                      "<td>" . $row2['code'] . "</td>" . 
+                      "<td>" . $row2['course_name'] . "</td>". 
+                      "<td>" . $row2['course_type'] . "</td>" . 
+                      "<td>" . 0 . "</td>" . 
+                      "<td>" . "<a href='registeredStudentInfo.php?info=$courseInfoSecond'>". "<i class=\"fas fa-bars\">" . "</i>" . "</a>" . "</td>" . "</tr>";
                     }
                   }
 
                 ?>
-              <!-- <tr>
-                <td><input type="file" id="myfile" name="myfile" multiple></td>
-                <td>COE3149681</td>
-                <td>Principle of Programming Languages	</td>
-                <td>Mandatory</td>
-                <td>34</td>
-                <td><a onclick="document.getElementById('student-list').style.display='block'" href="#course"><i class="fas fa-bars"></i></a></td>
-              </tr>
-              <tr>
-                <td><input type="file" id="myfile" name="myfile" multiple></td>
-                <td>COE3149680</td>
-                <td>Computer Organization	</td>
-                <td>Mandatory</td>
-                <td>44</td>
-                <td><a onclick="document.getElementById('student-list').style.display='block'" href="#course"><i class="fas fa-bars"></i></a></td>
-              </tr>
-              <tr>
-                <td><input type="file" id="myfile" name="myfile" multiple></td>
-                <td>COE2146020</td>
-                <td>Advanced Programming	</td>
-                <td>Elective</td>
-                <td>57</td>
-                <td><a onclick="document.getElementById('student-list').style.display='block'" href="#course"><i class="fas fa-bars"></i></a></td>
-              </tr>
-              <tr>
-                <td><input type="file" id="myfile" name="myfile" multiple></td>
-                <td>COE3149683</td>
-                <td>Introduction to Programming	</td>
-                <td>Mandatory</td>
-                <td>80</td>
-                <td><a onclick="document.getElementById('student-list').style.display='block'" href="#course"><i class="fas fa-bars"></i></a></td>
-              </tr> -->
             </tbody>
           </table> 
-
-          <div id="student-list" class="modal">
-            <span onclick="document.getElementById('student-list').style.display='none'" class="close" title="Close Modal">&times;</span>            
-            <div class="list">
-              
-          <div class="dropdown">
-            <button class="download-button">Download</button>
-            <div class="dropdown-content">
-            <a href="../files/student list.xls" download>.xls</a>
-            <a href="../files/student list.pdf" download>.pdf</a>
-            </div>
-          </div>
-
-              <ol>
-                <li>Berkay Ermiş</li>
-                <li>Fatih Furkan Ak</li>
-                <li>Ceren İşlekli</li>
-                <li>D</li>
-                <li>E</li>
-                <li>F</li>
-                <li>G</li>
-                <li>J</li>
-                <li>AA</li>
-                <li>BB</li>
-                <li>CC</li>
-                <li>DD</li>
-                <li>EE</li>
-                <li>FF</li>
-                <li>JJ</li>
-                <li>KK</li>
-                <li>LL</li>
-                <li>MM</li>
-                <li>NN</li>
-                <li>OO</li>
-                <li>PP</li>
-                <li>SS</li>
-                <li>JK</li>
-                <li>ASD</li>
-                <li>AWE</li>
-                <li>AED</li>
-                <li>ADX</li>
-                <li>AZX</li>
-                <li>BTC</li>
-                <li>ETH</li>
-                <li>LKJ</li>
-                <li>UBS</li>
-                <li>PTS</li>
-                <li>KHS</li>
-              </ol>
-            </div>
-          </div>
        </section>
 
        <section id='research'>
@@ -188,10 +102,8 @@ session_start();
             <?php
               require_once('../config.php');
                   
-              // Create connection
               $conn = mysqli_connect($servername, $username, $password,$db);
           
-              // Check connection
               if (!$conn) {
                 die("Connection failed: " . mysqli_connect_error());
               }
@@ -228,10 +140,8 @@ session_start();
           <?php
              require_once('../config.php');
                   
-             // Create connection
              $conn = mysqli_connect($servername, $username, $password,$db);
          
-             // Check connection
              if (!$conn) {
                die("Connection failed: " . mysqli_connect_error());
              }
@@ -256,10 +166,6 @@ session_start();
           </tbody>
         </table> 
 
-
-              <!-- <li>Calculus</li>
-              <li>Physics</li>
-              <li>Advanced Programming</li> -->
         <div id="research-requests" class="modal">
           <span onclick="document.getElementById('research-requests').style.display='none'" class="close" title="Close Modal">&times;</span>            
           <div>

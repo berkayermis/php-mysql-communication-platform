@@ -28,5 +28,13 @@ mysqli_stmt_close($statement);
 $message = "Research group was added into student succesfully!";
 echo "<script type='text/javascript'>alert('$message');</script>"; 
 
+$sql='DELETE FROM request WHERE instructor_id = '.$_SESSION['user_id'].' AND request_user_id = "'.$_GET['std'].'" ';
+
+if (mysqli_query($conn, $sql)) {
+  echo "success";
+} else {
+  echo "Error deleting record: " . mysqli_error($conn);
+}
+
 header("Location: instructor.php#research");
 exit;

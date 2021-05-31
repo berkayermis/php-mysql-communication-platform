@@ -391,7 +391,7 @@ form button:hover{
   border:1px solid #ddd;
 }
 
-.approval-button{
+input .approval-button{
   color: white;
   background-color: green;
   padding: 5px;
@@ -401,7 +401,7 @@ form button:hover{
   cursor: pointer;
 }
 
-.reject-button{
+input .reject-button{
   color: white;
   background-color: rgb(194, 55, 55);
   padding: 5px;
