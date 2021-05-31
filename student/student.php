@@ -103,6 +103,9 @@ session_start();
             }
             echo "</tbody> </table>";
           }
+          else{
+            echo "</tbody> </table>";
+          }
           ?>
        </section>
 
@@ -168,6 +171,7 @@ session_start();
              if (!$conn) {
                die("Connection failed: " . mysqli_connect_error());
              }
+
              $sql = "SELECT course.course_name AS A, course.code AS B , course.course_type AS C, course.material AS D 
              FROM course,user_course,user WHERE user_course.userr_id = $userID AND course.id = user_course.course_id AND user.id = $userID ";
             $result = mysqli_query($conn,$sql);
@@ -179,6 +183,9 @@ session_start();
                 "<td>" . $row['A'] . "</td>" .
                 "<td>" . $row['C'] . "</td>" . "</tr>";
               }
+              echo "</tbody> </table>";
+            }
+            else{
               echo "</tbody> </table>";
             }
             ?>
