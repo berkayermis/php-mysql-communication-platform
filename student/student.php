@@ -14,7 +14,6 @@ session_start();
 </head>
 <body>
     <nav>
-        <h1><?php  ?></h1>
         <a href="#course"><img class="icon-logo-width" src="../icons/school-logo.png" alt=""></a> <hr>
         <a href="#profile"><i class="far fa-user"></i></a>
         <div class="dropdown">
@@ -27,8 +26,7 @@ session_start();
         <a href="#research"><img class="icon-width" src="../icons/add-research.png" alt=""></a>
         <a href="#message"><i class="far fa-envelope"></i></a>
         <a href="../main/index.php"><i class="fas fa-sign-out-alt"></i></a>
-
-      </nav>
+    </nav>
        
      <div class= 'container'> 
         <section id= 'logo'>
@@ -67,7 +65,6 @@ session_start();
                     }
                     echo "</div>";
                   }
-
                 ?>
               </div>
             </li>
@@ -172,13 +169,14 @@ session_start();
                die("Connection failed: " . mysqli_connect_error());
              }
 
-             $sql = "SELECT course.course_name AS A, course.code AS B , course.course_type AS C, course.material AS D 
+             $sql = "SELECT course.id,course.course_name AS A, course.code AS B , course.course_type AS C
              FROM course,user_course,user WHERE user_course.userr_id = $userID AND course.id = user_course.course_id AND user.id = $userID ";
             $result = mysqli_query($conn,$sql);
             if(mysqli_num_rows($result) > 0){
               while($row = mysqli_fetch_assoc($result)){
+                $course_inf = $row['id'];
                 echo "<tr>" . 
-                "<td>" . $row['D'] . "</td>" .
+                "<td>" . "<a href='courseMaterial.php?info=$course_inf' style=\"width:auto;\">" . "<i class=\"fas fa-search\">" . "</i>" . "</a>" . "</td>" .
                 "<td>" . $row['B'] . "</td>" .
                 "<td>" . $row['A'] . "</td>" .
                 "<td>" . $row['C'] . "</td>" . "</tr>";
@@ -190,45 +188,7 @@ session_start();
             }
             ?>
 
-        <div id="id01" class="modal">
-          <div class="modal-content">
-            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>            
-            <table>
-              <thead>
-              <tr>
-                <th>File Name</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th>Size</th>
-                <th>Options</th>
-              </tr>
-            </thead>
-              <tr>
-                <td>homework 4 solution_21122018-merged.pdf</td>
-                <td>Homework 4 solution	</td>
-                <td>22.12.2018	</td>
-                <td>2,0 MB</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr>
-              <tr>
-                <td>MidtermII_Exam_Places.pdf	</td>
-                <td>Midterm II Exam Places-23.12.2018	</td>
-                <td>21.12.2018</td>
-                <td>140 KB</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr>
-              <tr>
-                <td>Midterm1 2 Results.pdf</td>
-                <td>-</td>
-                <td>67</td>
-                <td>22.1.2019</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr>
-            </table>  
-          </div>
-        </div>
-
-        <div id="id02" class="modal">
+        <!-- <div id="id02" class="modal">
           <div class="modal-content">
             <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>           
              <table>
@@ -281,7 +241,7 @@ session_start();
               </tr>
             </table>  
           </div>
-        </div>
+        </div> -->
        </section>
 
        <section id= 'research'>
