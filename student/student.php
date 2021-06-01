@@ -187,61 +187,6 @@ session_start();
               echo "</tbody> </table>";
             }
             ?>
-
-        <!-- <div id="id02" class="modal">
-          <div class="modal-content">
-            <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>           
-             <table>
-              <thead>
-              <tr>
-                <th>File Name</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th>Size</th>
-                <th>Options</th>
-              </tr>
-            </thead>
-              <tr>
-                <td>Written Homework Format.pdf	</td>
-                <td>Guidelines for written homework	</td>
-                <td>5.10.2017</td>
-                <td>50 KB</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr>
-              <tr>
-                <td>IMU - General Physics 1 - Experiment Manual.pdf		</td>
-                <td>Laboratory Manual	</td>
-                <td>5.10.2017	</td>
-                <td>1,0 MB	</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr>
-            </table>  
-          </div>
-        </div>
-
-        <div id="id03" class="modal">
-          <div class="modal-content">
-            <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>           
-             <table>
-              <thead>
-              <tr>
-                <th>File Name</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th>Size</th>
-                <th>Options</th>
-              </tr>
-            </thead>
-              <tr>
-                <td>COE3167880_Syllabus_Fall_2018.pdf	</td>
-                <td>Course Syllabus		</td>
-                <td>9.10.2018	</td>
-                <td>92 KB	</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr>
-            </table>  
-          </div>
-        </div> -->
        </section>
 
        <section id= 'research'>
@@ -261,26 +206,29 @@ session_start();
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Mehmet Kemal</td>
-              <td>Özdemir</td>
-              <td>Deep Learning for Odor Sensing</td>
-            </tr>
-            <tr>
-              <td>Fatih</td>
-              <td>Toy</td>
-              <td>Projection Vein Finder</td>
-            </tr>
-            <tr>
-              <td>Hüseyin Şerif</td>
-              <td>Savcı</td>
-              <td>Design of a Linear High Power Amplifier</td>
-            </tr>
-            <tr>
-              <td>Hasan Fehmi</td>
-              <td>Ateş</td>
-              <td>Small Object Detection and tracking in WAS videos</td>
-            </tr>
+            <?php
+              require_once('../config.php');
+
+              // Create connection
+              $conn = mysqli_connect($servername, $username, $password,$db);
+          
+              // Check connection
+              if (!$conn) {
+                die("Connection failed: " . mysqli_connect_error());
+              }
+
+              $sql = 'SELECT user.fname,user.lname,student_research_group.research_area FROM student_research_group,user 
+              WHERE user.id=instructor_id AND student_id = "'.$_SESSION['user_id'].'"';
+              $result = mysqli_query($conn,$sql);
+              if(mysqli_num_rows($result)>0){
+                while($row = mysqli_fetch_assoc($result)){
+                  echo "<tr>" . 
+                  "<td>" . $row['fname'] . "</td>" . 
+                  "<td>" . $row['lname'] . "</td>" . 
+                  "<td>" . $row['research_area'] . "</td>". "</tr>";
+                }
+              }
+            ?>
           </tbody>
         </table> 
 
@@ -352,24 +300,6 @@ session_start();
      </div>
 
      <script>
-      // Get the modal
-      var modal = document.getElementById('id01');
-      var modal2 = document.getElementById('id02');
-      var modal3 = document.getElementById('id03');
-
-      // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function(event) {
-          if (event.target == modal) {
-              modal.style.display = "none";
-          }
-          if(event.target == modal2){
-            modal2.style.display = "none";
-          }
-          if(event.target == modal3){
-            modal3.style.display = "none";
-          }
-      }
-
       function addAlertFunction(){
         alert("Course was added succesfully!");
       }
@@ -381,18 +311,6 @@ session_start();
       function requestAlert(){
         alert("Request was sent succesfully!");
       }
-
       </script>
-
-
-<?php
-
-
-
-
-?>
-
-
-
 </body>
 </html>
