@@ -64,27 +64,6 @@
                     }
                 }
             ?>
-              <!-- <tr>
-                <td>homework 4 solution_21122018-merged.pdf</td>
-                <td>Homework 4 solution	</td>
-                <td>22.12.2018	</td>
-                <td>2,0 MB</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr>
-              <tr>
-                <td>MidtermII_Exam_Places.pdf	</td>
-                <td>Midterm II Exam Places-23.12.2018	</td>
-                <td>21.12.2018</td>
-                <td>140 KB</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr>
-              <tr>
-                <td>Midterm1 2 Results.pdf</td>
-                <td>-</td>
-                <td>67</td>
-                <td>22.1.2019</td>
-                <td><a style="color: black;" href="../files/COE3167880_Syllabus_Fall_2018.pdf" download><i class="fas fa-file-download"></i></a></td>
-              </tr> -->
             </table>  
           </div>
         </div>

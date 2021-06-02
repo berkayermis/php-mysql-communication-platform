@@ -114,7 +114,7 @@ session_start();
               <div class="dropdown-taken">
                 <a class="download-taken" href="#taken-course">Download</a>
                 <div class="dropdown-content-taken">
-                <a href="../files/taken-courses.xls" download>.xls</a>
+                <a href="download.php" >.xls</a>
                 <a href="../files/taken-courses.pdf" download>.pdf</a>
                 </div>
               </div>
@@ -234,7 +234,7 @@ session_start();
 
         <div id="id99" class="modal">
             <span onclick="document.getElementById('id99').style.display='none'" class="close" title="Close Modal">&times;</span>            
-            <form class="form" action="student.php" method="post">
+            <form class="form" action="student.php#research" method="post">
               <h2>Send Request</h2> <br>
               <label for="recipient"><strong>Recipient</strong></label> <br>
               <select name="recipient" id="recipient">
@@ -262,13 +262,14 @@ session_start();
               <textarea name="note" id="note" cols="30" rows="10" placeholder="Type a note.."></textarea> <br>              
               <label for="file">File</label> <br> 
               <input type="file" name="file"></input> <br>
-              <button href="#research" name="send_request" onclick="requestAlert()">Send</button>
+              <button name="send_request">Send</button>
             </form>
         </div>
       </section>
 
       <?php
       if(isset($_POST['send_request'])){
+        $filename = $_POST['file'];
         $recipient = $_POST['recipient'];
         $x = array();
         $x = explode(" ",$recipient);
@@ -280,11 +281,13 @@ session_start();
           }
         }
         $note = $_POST['note'];
-        $req_file = $_POST['file'];
-        
+
+      
+        #sql query to insert into database
+        // $sql = "INSERT INTO request (request_user_id,instructor_id,note,request_file) VALUES ($userID,$recipientID,$note,$filename)";
         $query = "INSERT INTO request (request_user_id,instructor_id,note,request_file) VALUES (?,?,?,?)";
         $statement = mysqli_prepare($conn,$query);
-        mysqli_stmt_bind_param($statement,'iisb',$userID,$recipientID,$note,$req_file);
+        mysqli_stmt_bind_param($statement,'iisb',$userID,$recipientID,$note,$filename);
         mysqli_stmt_execute($statement);
         print(mysqli_stmt_error($statement) . "\n");
         mysqli_stmt_close($statement);
@@ -308,9 +311,6 @@ session_start();
         alert("Course was dropped!");
       }
 
-      function requestAlert(){
-        alert("Request was sent succesfully!");
-      }
       </script>
 </body>
 </html>

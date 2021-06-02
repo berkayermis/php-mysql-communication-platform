@@ -25,11 +25,11 @@ if(isset($_POST['login'])){
 				$_SESSION['user_id'] = $row['id'];
 				$_SESSION['user_role'] = $row['user_role'];
 				if($row['user_role']=="secretary"){
-					header('Location: secretary/secretary.php');
+					header('Location: secretary/secretary.php#profile');
 					exit;
 				}
 				else if($row['user_role']=="instructor"){
-					header("Location: instructor/instructor.php");
+					header("Location: instructor/instructor.php#profile");
 					exit;
 				}
 				else if($row['user_role']=="student"){
