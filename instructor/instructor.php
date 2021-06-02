@@ -58,7 +58,7 @@ session_start();
                   }
 
                   $sql = 'SELECT A.course_id,course.id,course_name,course.code,course.course_type,COUNT(A.userr_id) AS total
-                  FROM user_course AS A,course,user WHERE course.instructor_id=8 AND course.instructor_id=user.id AND course.id=A.course_id GROUP BY course_name';
+                  FROM user_course AS A,course,user WHERE course.instructor_id=user.id AND course.id=A.course_id AND course.instructor_id="'.$_SESSION['user_id'].'" GROUP BY course_name';
                   $result = mysqli_query($conn,$sql);
                   $sql2 = 'SELECT course_name,course.id,course.code,course.course_type
                   FROM course WHERE course.id NOT IN (SELECT A.course_id FROM user_course AS A) AND course.instructor_id= "'.$_SESSION['user_id'].'" ';
@@ -68,7 +68,8 @@ session_start();
                       while($row = mysqli_fetch_assoc($result)){
                         $courseInfo = $row['course_id'];
                         echo "<tr>" . 
-                        "<td>" . '<input type="file" id="myfile" name="myfile" multiple>' . "</td>" . 
+                        // "<td>" . '<input type="file" id="myfile" name="myfile" multiple>' . "</td>" . 
+                        "<td>" . "<button onclick=\"location.href = 'uploadmaterial.php?info=$courseInfo'\"  class='approval-button'>" . "Upload" . '</button>' . "</td>" .
                         "<td>" . $row['code'] . "</td>" . 
                         "<td>" . $row['course_name'] . "</td>". 
                         "<td>" . $row['course_type'] . "</td>" . 
@@ -80,7 +81,7 @@ session_start();
                     while($row2 = mysqli_fetch_assoc($result2)){
                       $courseInfoSecond = $row2['id'];
                       echo "<tr>" . 
-                      "<td>" . '<input type="file" id="myfile" name="myfile" multiple>' . "</td>" . 
+                      "<td>" . "<button onclick=\"location.href = 'uploadmaterial.php?info=$courseInfoSecond'\"  class='approval-button'>" . "Upload" . '</button>' . "</td>" .
                       "<td>" . $row2['code'] . "</td>" . 
                       "<td>" . $row2['course_name'] . "</td>". 
                       "<td>" . $row2['course_type'] . "</td>" . 
@@ -88,6 +89,7 @@ session_start();
                       "<td>" . "<a href='registeredStudentInfo.php?info=$courseInfoSecond'>". "<i class=\"fas fa-bars\">" . "</i>" . "</a>" . "</td>" . "</tr>";
                     }
                   }
+
 
                 ?>
             </tbody>
@@ -198,8 +200,9 @@ session_start();
                 if(mysqli_num_rows($result)>0){
                   while($row = mysqli_fetch_assoc($result)){
                     $std_data = $row['student_id'];
+                    $req_data = 'berkay_ermis.pdf';
                     echo "<tr>" . 
-                    "<td>" . "<a>" . "<i class='fas fa-folder'>" . "</i>" . "</a>" . "</td>" . 
+                    "<td>" . "<a href='../files/$req_data' download>" . "<i class='fas fa-folder'>" . "</i>" . "</a>" . "</td>" . 
                     "<td>" . $row['fname'] . " " . $row['lname'] .  "</td>" . 
                     "<td>" . $row['student_no'] . "</td>" . 
                     "<td>" . $row['note'] . "</td>" . 

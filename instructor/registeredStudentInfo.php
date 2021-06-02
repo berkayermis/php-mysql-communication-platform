@@ -26,7 +26,7 @@
           <div class="dropdown">
             <button class="download-button">Download</button>
             <div class="dropdown-content">
-            <a href="../files/student list.xls" download>.xls</a>
+            <a href="download.php?info=<?php echo $_GET['info']; ?>">.xls</a>
             <a href="../files/student list.pdf" download>.pdf</a>
             </div>
           </div>
